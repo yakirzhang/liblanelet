@@ -1,0 +1,5 @@
+project(libLanelet)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+set(CMAKE_CXX_STANDARD 14)
+add_subdirectory(libLanelet)
+add_subdirectory(app)
