@@ -4,5 +4,5 @@
  cd build
  cmake..
  make demo
- ./ app / demo../ sample.osm
+ ./app/demo ../sample.osm
 ```
