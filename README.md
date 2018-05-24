@@ -1,3 +1,8 @@
 ## run
-``` mkdir build cmake..make demo./ app / demo../ sample.osm
+```
+ mkdir build
+ cd build
+ cmake..
+ make demo
+ ./ app / demo../ sample.osm
 ```
