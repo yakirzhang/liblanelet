@@ -27,23 +27,13 @@
 
 using namespace LLet;
 
-LaneletMap::LaneletMap(std::vector<lanelet_ptr_t> lanelets)
-    : _lanelets(lanelets) {
-  init();
-}
+LaneletMap::LaneletMap(std::vector<lanelet_ptr_t> lanelets) : _lanelets(lanelets) { init(); }
 
-LaneletMap::LaneletMap(std::string filename)
-    : _lanelets(LLet::parse_xml(filename)) {
-  init();
-}
+LaneletMap::LaneletMap(std::string filename) : _lanelets(LLet::parse_xml(filename)) { init(); }
 
-std::vector<lanelet_ptr_t> LaneletMap::query(const BoundingBox &box) {
-  return _lanelet_tree.query(box);
-}
+std::vector<lanelet_ptr_t> LaneletMap::query(const BoundingBox &box) { return _lanelet_tree.query(box); }
 
-std::vector<lanelet_ptr_t>
-LaneletMap::shortest_path(const lanelet_ptr_t &start,
-                          const lanelet_ptr_t &dest) const {
+std::vector<lanelet_ptr_t> LaneletMap::shortest_path(const lanelet_ptr_t &start, const lanelet_ptr_t &dest) const {
   int32_t start_index = vertex_id_by_lanelet(start);
   int32_t dest_index = vertex_id_by_lanelet(dest);
 
@@ -58,8 +48,7 @@ LaneletMap::shortest_path(const lanelet_ptr_t &start,
 
   std::vector<lanelet_ptr_t> sp_ll(sp->size());
 
-  std::transform(sp->cbegin(), sp->cend(), sp_ll.begin(),
-                 [this](int32_t index) { return graph()[index].lanelet; });
+  std::transform(sp->cbegin(), sp->cend(), sp_ll.begin(), [this](int32_t index) { return graph()[index].lanelet; });
 
   std::cout << sp_ll << std::endl;
 
@@ -68,8 +57,7 @@ LaneletMap::shortest_path(const lanelet_ptr_t &start,
 
 const lanelet_ptr_t &LaneletMap::lanelet_by_id(int32_t id) const {
   auto pos =
-      std::find_if(_lanelets.cbegin(), _lanelets.cend(),
-                   [&id](const lanelet_ptr_t &ll) { return ll->id() == id; });
+      std::find_if(_lanelets.cbegin(), _lanelets.cend(), [&id](const lanelet_ptr_t &ll) { return ll->id() == id; });
   if (pos != _lanelets.cend())
     return *pos;
   else {
@@ -99,8 +87,7 @@ void LaneletMap::init() {
         int32_t index_dest = this->vertex_id_by_lanelet(other);
         bool inserted;
         Graph::edge_descriptor new_edge;
-        std::tie(new_edge, inserted) =
-            boost::add_edge(index_src, index_dest, this->_graph);
+        std::tie(new_edge, inserted) = boost::add_edge(index_src, index_dest, this->_graph);
         assert(inserted);
         EdgeInfo info;
         info.routing_cost = len;

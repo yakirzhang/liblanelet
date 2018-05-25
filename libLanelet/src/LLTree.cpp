@@ -1,6 +1,6 @@
 /*
  *  © 2014 by Philipp Bender <pbender@fzi.de>
- * 
+ *
  *  This file is part of libLanelet.
  *
  *  libLanelet is free software: you can redistribute it and/or modify
@@ -23,40 +23,34 @@
 
 using namespace LLet;
 
-void LLTree::insert(const lanelet_ptr_t& obj)
-{
-    int32_t index = _lanelets.size();
-    _lanelets.push_back( obj );
-    const auto bb = obj->bb();
-    double min_data[2] = {bb.get<BoundingBox::SOUTH>(), bb.get<BoundingBox::WEST>()};
-    double max_data[2] = {bb.get<BoundingBox::NORTH>(), bb.get<BoundingBox::EAST>()};
-    _tree.Insert(min_data, max_data, index);
+void LLTree::insert(const lanelet_ptr_t& obj) {
+  int32_t index = _lanelets.size();
+  _lanelets.push_back(obj);
+  const auto bb = obj->bb();
+  double min_data[2] = {bb.get<BoundingBox::SOUTH>(), bb.get<BoundingBox::WEST>()};
+  double max_data[2] = {bb.get<BoundingBox::NORTH>(), bb.get<BoundingBox::EAST>()};
+  _tree.Insert(min_data, max_data, index);
 }
 
-namespace
-{
+namespace {
 
-    bool callback(int32_t index, void* data )
-    {
-        auto indices = static_cast< std::vector< int32_t >* >(data);
-        indices->push_back(index);
-        return true;
-    }
-
+bool callback(int32_t index, void* data) {
+  auto indices = static_cast<std::vector<int32_t>*>(data);
+  indices->push_back(index);
+  return true;
+}
 }
 
-std::vector< lanelet_ptr_t > LLTree::query( const BoundingBox& bb)
-{
-    double min_data[2] = {bb.get<BoundingBox::SOUTH>(), bb.get<BoundingBox::WEST>()};
-    double max_data[2] = {bb.get<BoundingBox::NORTH>(), bb.get<BoundingBox::EAST>()};
+std::vector<lanelet_ptr_t> LLTree::query(const BoundingBox& bb) {
+  double min_data[2] = {bb.get<BoundingBox::SOUTH>(), bb.get<BoundingBox::WEST>()};
+  double max_data[2] = {bb.get<BoundingBox::NORTH>(), bb.get<BoundingBox::EAST>()};
 
-    std::vector< int32_t > indices;
-    _tree.Search(min_data, max_data, callback, &indices);
+  std::vector<int32_t> indices;
+  _tree.Search(min_data, max_data, callback, &indices);
 
-    std::vector< lanelet_ptr_t > result(indices.size());
+  std::vector<lanelet_ptr_t> result(indices.size());
 
-    std::transform(indices.begin(), indices.end(), result.begin(), [this](int32_t index){ return _lanelets[index];});
+  std::transform(indices.begin(), indices.end(), result.begin(), [this](int32_t index) { return _lanelets[index]; });
 
-    return result;
-
+  return result;
 }
